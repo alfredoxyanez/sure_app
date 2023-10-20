@@ -16,6 +16,7 @@ def db_seed(db: SQLAlchemy):
         seed_data = json.load(json_file)
         for pricing_param in seed_data:
             valid, error = validate_pricing_data(pricing_param)
+            # here we check if the state already exists, if so we dont add the seed vals
             if valid and pricing_param["state"] not in pricing_params_states:
                 new_pricing = PricingParams(
                     state=pricing_param["state"],
