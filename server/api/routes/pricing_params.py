@@ -10,6 +10,13 @@ pricing_params_blueprint = Blueprint("pricing_params", __name__)
 
 @pricing_params_blueprint.route("/", methods=["GET", "POST"])
 def pricing():
+    """GET and POST methods for pricing params
+    GET fetches PricingParams by id
+    POST creates PricingParams with JSON as input
+
+    Returns:
+        Response
+    """
     if request.method == "GET":
         args = request.args
         pricing = PricingParams.query.filter_by(id=args.get("id")).first_or_404()
@@ -34,6 +41,11 @@ def pricing():
 
 @pricing_params_blueprint.route("/get_all", methods=["GET"])
 def get_all_pricing():
+    """Returns all PricingParams
+
+    Returns:
+        Response
+    """
     if request.method == "GET":
         pricings = PricingParams.query.all()
         return jsonify(pricings)
@@ -41,6 +53,11 @@ def get_all_pricing():
 
 @pricing_params_blueprint.route("/add_or_update_coverage", methods=["POST"])
 def add_or_update_coverage():
+    """Adds or updates PricingParams coverage (coverage_type (basic, premium) and values)
+
+    Returns:
+        Response
+    """
     if request.method == "POST":
         args = request.args
         pricing = PricingParams.query.filter_by(
@@ -56,6 +73,11 @@ def add_or_update_coverage():
 
 @pricing_params_blueprint.route("/add_or_update_extras", methods=["POST"])
 def add_or_update_extras():
+    """Adds or updates PricingParams extras
+
+    Returns:
+        Response
+    """
     if request.method == "POST":
         args = request.args
         pricing = PricingParams.query.filter_by(
@@ -64,16 +86,18 @@ def add_or_update_extras():
         data = request.json
         valid, err = validate_extras([data])
         extras = [extra["name"] for extra in pricing.extras]
-        print(extras)
         if valid:
+            # Here we update the extra
             if data["name"] in extras:
+                # we iterate through the extras in PricingParams to find the one with the matching name
                 for extra in pricing.extras:
                     if data["name"] == extra["name"]:
                         if "type" in data:
                             extra["type"] = data["type"]
                         if "value" in data:
                             extra["value"] = data["value"]
-                        break
+                        break  # if the names match we then break because we found the one we need to update
+            # Here we add the extra because it is not in the list
             else:
                 pricing.extras.append(data)
             db.session.commit()

@@ -11,6 +11,13 @@ quotes_blueprint = Blueprint("quote", __name__)
 
 @quotes_blueprint.route("/", methods=["GET", "POST"])
 def quote():
+    """GET and POST methods for quote
+    GET fetches Quote by id
+    POST creates Quote with JSON as input
+
+    Returns:
+        Response with pricing calculation and quote id as JSON
+    """
     if request.method == "GET":
         args = request.args
         quote = Quote.query.filter_by(id=args.get("id")).first_or_404()
@@ -40,6 +47,11 @@ def quote():
 
 @quotes_blueprint.route("/price", methods=["GET"])
 def get_quote_price():
+    """GET function that calculates quote price for quote thagt is passed in by the id parameter
+
+    Returns:
+        Response
+    """
     if request.method == "GET":
         args = request.args
         quote = Quote.query.filter_by(id=args.get("id")).first_or_404()
