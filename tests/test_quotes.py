@@ -3,6 +3,7 @@ from server.database.models import PricingParams, Quote
 
 
 def test_quote_1(client, app):
+    """test case 1 used for validation"""
     input_json = {
         "firstname": "Name",
         "lastname": "Lastname",
@@ -19,6 +20,7 @@ def test_quote_1(client, app):
 
 
 def test_quote_2(client, app):
+    """test case 2 used for validation"""
     input_json = {
         "firstname": "Name",
         "lastname": "Lastname",
@@ -35,6 +37,7 @@ def test_quote_2(client, app):
 
 
 def test_quote_3(client, app):
+    """test case 3 used for validation"""
     input_json = {
         "firstname": "Name",
         "lastname": "Lastname",
@@ -51,6 +54,7 @@ def test_quote_3(client, app):
 
 
 def test_quote_4(client, app):
+    """test case 4 used for validation"""
     input_json = {
         "firstname": "Name",
         "lastname": "Lastname",
