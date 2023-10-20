@@ -1,0 +1,62 @@
+[
+    {
+        "state": "california",
+        "tax": 0.01,
+        "coverage_type_prices": {
+            "basic": 20,
+            "premium": 40
+        },
+        "extras": [
+            {
+                "name": "pet",
+                "type": "add",
+                "value": 20
+            },
+            {
+                "name": "flood",
+                "type": "multiply",
+                "value": 0.02
+            }
+        ]
+    },
+    {
+        "state": "new_york",
+        "tax": 0.02,
+        "coverage_type_prices": {
+            "basic": 20,
+            "premium": 40
+        },
+        "extras": [
+            {
+                "name": "pet",
+                "type": "add",
+                "value": 20
+            },
+            {
+                "name": "flood",
+                "type": "multiply",
+                "value": 0.1
+            }
+        ]
+    },
+    {
+        "state": "texas",
+        "tax": 0.005,
+        "coverage_type_prices": {
+            "basic": 20,
+            "premium": 40
+        },
+        "extras": [
+            {
+                "name": "pet",
+                "type": "add",
+                "value": 20
+            },
+            {
+                "name": "flood",
+                "type": "multiply",
+                "value": 0.5
+            }
+        ]
+    }
+]
