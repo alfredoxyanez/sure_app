@@ -71,7 +71,7 @@ POST `api/pricing_params/add_or_update_extras` | you can chage or update an extr
 # Requirements
 - [x] We suggest Python 3 or later. [Python 3.9]
 - [x] You may use any application frameworks or tools you’d like, though are not required to do so. If you choose to make use of specific tools, make sure to include any setup and usage instructions within your README that may be needed. [Taken care of by docker]
-- [x]How you persist Quotes is up to you as long as they can be **stored** and **retrieved** for later usage i.e. pricing. [using postgres DB for "prod" using sqlite for testing]
+- [x] How you persist Quotes is up to you as long as they can be **stored** and **retrieved** for later usage i.e. pricing. [using postgres DB for "prod" using sqlite for testing]
 - [x] Your solution should be appropriately unit tested and include any details on how to run automated tests. [test in the test dir]
 
 
