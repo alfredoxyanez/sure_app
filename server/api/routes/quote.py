@@ -60,7 +60,7 @@ def get_quote_price():
         return jsonify(pricing)
 
 
-@quotes_blueprint.route("/add_extra", methods=["POST"])
+@quotes_blueprint.route("/add_extra_or_update", methods=["POST"])
 def add_extra():
     """POST function that adds extra to existing quote
 
@@ -72,8 +72,15 @@ def add_extra():
         data = request.json
         quote = Quote.query.filter_by(id=args.get("id")).first_or_404()
         valid, err = validate_extra(data)
+        # we create a dictionary of extra name to its iindex to easily update JSON
+        extras = {extra["name"]: i for i, extra in enumerate(quote.extras)}
         if valid:
-            quote.extras.append(data)
+            # if we are updating an existing extra
+            if data["name"] in extras:
+                quote.extras[extras[data["name"]]] = data
+                # new extra
+            else:
+                quote.extras.append(data)
             db.session.commit()
             return "Success", 200
         else:
