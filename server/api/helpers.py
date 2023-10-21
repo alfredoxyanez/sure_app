@@ -106,6 +106,23 @@ def validate_extras(data) -> (bool, str):
     return True, None
 
 
+def validate_extra(data) -> (bool, str):
+    """validates quote extra json
+
+    Args:
+        data (json): data needed to be validated
+
+    Returns:
+        bool: Returns True is data is valid else False
+        str: If data is not valid, it returns the error str
+    """
+    if "name" not in data or "value" not in data:
+        return False, " key missing, ensure you have name, type, and value"
+    if not type(data["value"]) == bool:
+        return False, " value is wrong format"
+    return True, None
+
+
 def validate_quotes_data(data) -> (bool, str):
     """Validates the json to ensure that:
     1. It has firstname, lastname, state and coverage_type
@@ -184,8 +201,8 @@ def calculate_pricing(quote: Quote, pricing_params: PricingParams) -> dict:
         "id": quote.id,
         "monthly_subtotal": format_float(amount),
         "monthly_tax": format_float(amount * pricing_params.tax),
-        "monthly_total": format_float(amount * (1 + pricing_params.tax)),
     }
+    result["monthly_total"] = result["monthly_subtotal"] + result["monthly_tax"]
     return result
 
 
