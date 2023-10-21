@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request, jsonify, abort
 from server.api.db import db
 from server.database.models import PricingParams, Quote, State
-from server.api.helpers import validate_quotes_data, calculate_pricing
+from server.api.helpers import validate_quotes_data, calculate_pricing, validate_extra
 
 
 quotes_blueprint = Blueprint("quote", __name__)
@@ -39,7 +39,7 @@ def quote():
             db.session.add(quote)
             db.session.commit()
             pricing = calculate_pricing(quote, state_pricing)
-            return jsonify(pricing)
+            return jsonify(pricing), 201
 
         else:
             return f"Data formated incorrectly: {error}", 422
@@ -47,7 +47,7 @@ def quote():
 
 @quotes_blueprint.route("/price", methods=["GET"])
 def get_quote_price():
-    """GET function that calculates quote price for quote thagt is passed in by the id parameter
+    """GET function that calculates quote price for quote that is passed in by the id parameter
 
     Returns:
         Response
@@ -58,3 +58,23 @@ def get_quote_price():
         state_pricing = PricingParams.query.filter_by(state=quote.state).first_or_404()
         pricing = calculate_pricing(quote, state_pricing)
         return jsonify(pricing)
+
+
+@quotes_blueprint.route("/add_extra", methods=["POST"])
+def add_extra():
+    """POST function that adds extra to existing quote
+
+    Returns:
+        Response
+    """
+    if request.method == "POST":
+        args = request.args
+        data = request.json
+        quote = Quote.query.filter_by(id=args.get("id")).first_or_404()
+        valid, err = validate_extra(data)
+        if valid:
+            quote.extras.append(data)
+            db.session.commit()
+            return "Success", 200
+        else:
+            return f"Data formated incorrectly: {err}", 422
