@@ -11,7 +11,6 @@ def test_quote_1(client, app):
         "coverage_type": "basic",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -29,7 +28,6 @@ def test_quote_2(client, app):
         "coverage_type": "premium",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -47,7 +45,6 @@ def test_quote_3(client, app):
         "coverage_type": "premium",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": False}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -65,7 +62,6 @@ def test_quote_4(client, app):
         "coverage_type": "basic",
         "extras": [{"name": "pet", "value": False}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -83,7 +79,6 @@ def test_quote_5(client, app):
         "coverage_type": "premium",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -101,7 +96,6 @@ def test_quote_6(client, app):
         "coverage_type": "premium",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
     assert response.status_code == 201
     with app.app_context():
@@ -119,13 +113,12 @@ def test_quote_after_adding_extra(client, app):
         "coverage_type": "premium",
         "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
     }
-    # input_json = json.dumps(input_json)
     response = client.post("/api/quote/", json=input_json)
+    # checking that pricing is correct
     assert response.status_code == 201
-    with app.app_context():
-        assert response.json["monthly_subtotal"] == 90.0
-        assert response.json["monthly_tax"] == 0.45
-        assert response.json["monthly_total"] == 90.45
+    assert response.json["monthly_subtotal"] == 90.0
+    assert response.json["monthly_tax"] == 0.45
+    assert response.json["monthly_total"] == 90.45
     # Add new extra to state pricing params
     new_extra = {"name": "fire", "type": "add", "value": 10}
     add_response = client.post(
@@ -136,7 +129,7 @@ def test_quote_after_adding_extra(client, app):
     # check to see if the previous quote price changes based on the fact that we add the new extra
     new_extra = {"name": "fire", "value": True}
     response_new_extra = client.post(
-        f'/api/quote/add_extra?id={response.json["id"]}', json=new_extra
+        f'/api/quote/add_extra_or_update?id={response.json["id"]}', json=new_extra
     )
 
     assert response_new_extra.status_code == 200
@@ -147,3 +140,37 @@ def test_quote_after_adding_extra(client, app):
     assert updated_quote_price.json["monthly_subtotal"] == 105.0
     assert updated_quote_price.json["monthly_tax"] == 0.52
     assert updated_quote_price.json["monthly_total"] == 105.52
+
+
+def test_quote_extra_updated(client, app):
+    """test case where we first calculate the pricing based on the
+    client having a pet, then changing the to false to ensure that the pricing reflects
+    that the pet premium no longer applies
+    """
+    input_json = {
+        "firstname": "Name",
+        "lastname": "Lastname",
+        "state": "texas",
+        "coverage_type": "premium",
+        "extras": [{"name": "pet", "value": True}, {"name": "flood", "value": True}],
+    }
+    response = client.post("/api/quote/", json=input_json)
+    assert response.status_code == 201
+    # Premium (40) + Pet = (20) Flood multiplier (50 %) = $90
+    with app.app_context():
+        assert response.json["monthly_subtotal"] == 90.0
+        assert response.json["monthly_tax"] == 0.45
+        assert response.json["monthly_total"] == 90.45
+
+    update_extra = {"name": "pet", "value": False}
+    response_new_extra = client.post(
+        f'/api/quote/add_extra_or_update?id={response.json["id"]}', json=update_extra
+    )
+    assert response_new_extra.status_code == 200
+
+    updated_quote_price = client.get(f'/api/quote/price?id={response.json["id"]}')
+    # checking that pricing is correct
+    # Premium (40) + Pet = (0) Flood multiplier (50 %) = $60
+    assert updated_quote_price.json["monthly_subtotal"] == 60.0
+    assert updated_quote_price.json["monthly_tax"] == 0.3
+    assert updated_quote_price.json["monthly_total"] == 60.3
