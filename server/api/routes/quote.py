@@ -47,7 +47,7 @@ def quote():
 
 @quotes_blueprint.route("/price", methods=["GET"])
 def get_quote_price():
-    """GET function that calculates quote price for quote that is passed in by the id parameter
+    """GET function that calculates quote price for quote with id (parameter)
 
     Returns:
         Response
@@ -62,7 +62,7 @@ def get_quote_price():
 
 @quotes_blueprint.route("/add_extra_or_update", methods=["POST"])
 def add_extra():
-    """POST function that adds extra to existing quote
+    """POST function that adds or updates extra to existing quote
 
     Returns:
         Response

@@ -63,7 +63,7 @@ def validate_pricing_data(data) -> (bool, str):
 
 
 def validate_coverage(data) -> (bool, str):
-    """Validates coverages, ensures that we have both basic and premium andthe values are floats
+    """Validates coverages, ensures that we have both basic and premium and the values are floats
 
     Args:
         data (json): data needed to be validated

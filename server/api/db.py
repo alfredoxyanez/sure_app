@@ -1,4 +1,4 @@
-""" This created the database that will be important to make database transactions
+""" This created the database that will be used to make database transactions
 """
 from flask_sqlalchemy import SQLAlchemy
 

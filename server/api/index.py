@@ -13,10 +13,10 @@ from server.api.routes.quote import quotes_blueprint
 
 
 def create_app(database_uri=None):
-    """This created the main app and to create teh app for testing
+    """This created the main app and to create the app for testing
 
     Args:
-        database_uri (str, optional): Database URI, this is used in out app and also to test. Defaults to None.
+        database_uri (str, optional): Database URI, this is used in our app and also to test. Defaults to None.
 
     Returns:
         app(Flask):  the app
