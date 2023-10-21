@@ -202,7 +202,9 @@ def calculate_pricing(quote: Quote, pricing_params: PricingParams) -> dict:
         "monthly_subtotal": format_float(amount),
         "monthly_tax": format_float(amount * pricing_params.tax),
     }
-    result["monthly_total"] = result["monthly_subtotal"] + result["monthly_tax"]
+    result["monthly_total"] = round(
+        result["monthly_subtotal"] + result["monthly_tax"], 2
+    )
     return result
 
 
